@@ -22,9 +22,9 @@ class Interface(object):
         process = ProcessManager(job_model)
         self.multiple_processes_manager.add_process(process)
         self.multiple_processes_manager.start_new_processes_and_update_states(self.database)
-    
+
     def kill_process(self, job_id):
-        self.multiple_processes_manager.kill_process_with_job_id(job_id, self.database)    
+        self.multiple_processes_manager.kill_process_with_job_id(job_id, self.database)
 
 
 Stop = False
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     stop_event = Event()
     multiple_processes_manager_poll_thread = (
-        Thread(target=multiple_processes_manager_poll, 
+        Thread(target=multiple_processes_manager_poll,
             args=(multiple_processes_manager, database, stop_event),
             )
     )

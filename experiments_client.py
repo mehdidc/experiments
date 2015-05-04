@@ -14,7 +14,7 @@ Pyro4.config.SERIALIZER = 'pickle'
 Pyro4.config.SERIALIZERS_ACCEPTED.add('pickle')
 
 def show_job_model_short(job_model):
-    print "ID:%s Command:'%s' Start:%s, Stop:%s" % (job_model._id, 
+    print "ID:%s Command:'%s' Start:%s, Stop:%s" % (job_model._id,
         " ".join(job_model.command_model.args), datetime_to_str(job_model.datetime_from),
         datetime_to_str(job_model.datetime_to))
 
@@ -28,13 +28,13 @@ def show_job_model_long(job_model):
 def show_job_models(job_models):
     print "%d job(s)..." % (len(job_models))
     for job_model in job_models:
-        show_job_model_short(job_model) 
+        show_job_model_short(job_model)
 
 def find_jobs_params(database, state, categories, input_files_contains, output_file_contains, extra):
     params = {"state": state}
     if categories is not None:
         params["command_model"] = {"categories": {"$in": categories}}
-    
+
     for file_contains, type_file in (input_files_contains,"input"), (output_file_contains, "output"):
 
         param_name = type_file + "_data"
@@ -68,14 +68,14 @@ if __name__ == "__main__":
     parser.add_argument('--date-from', help="curjobs | pastjobs", required=False)
     parser.add_argument('--date-to', help="curjobs | pastjobs", required=False)
     parser.add_argument('--date', help="curjobs | pastjobs", required=False)
-    parser.add_argument('--data-name', help='jobdata', required=False) 
-       
+    parser.add_argument('--data-name', help='jobdata', required=False)
+
     args = parser.parse_args()
     server = "localhost:50490"
     database = Pyro4.Proxy("PYRO:database@%s" % (server,))
     interface = Pyro4.Proxy("PYRO:interface@%s" % (server,))
-    
-    params = {} 
+
+    params = {}
     if args.date is not None:
         date = datetime_from_str(args.date)
         params["datetime_from"] = {"$gte": date}
@@ -109,7 +109,7 @@ if __name__ == "__main__":
             print str(command_model)
     elif args.action == "newcommand":
         if args.cwd is None: args.cwd = "."
-        command_model = CommandModel(args.args.split(), 
+        command_model = CommandModel(args.args.split(),
             input_files=args.input_files, output_files=args.output_files, cwd=args.cwd, categories=args.categories)
         database.insert(command_model)
         print command_model
@@ -128,7 +128,7 @@ if __name__ == "__main__":
         database.remove(JobModel, job_id)
     elif args.action == "dropcommand":
         command_id = ObjectId(args.command_id)
-        database.remove(CommandModel, command_id) 
+        database.remove(CommandModel, command_id)
     elif args.action == "jobdetails":
         job_model = database.find_one(JobModel, ObjectId(args.job_id))
         show_job_model_long(job_model)
@@ -140,4 +140,4 @@ if __name__ == "__main__":
             print job_model.input_data[args.data_name]
         elif args.data_name in job_model.output_data:
             print job_model.output_data[args.data_name]
-       
+
